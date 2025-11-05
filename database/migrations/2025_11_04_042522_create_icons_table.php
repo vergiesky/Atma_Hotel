@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hotels', function (Blueprint $table) {
-            $table->increments('id_hotel');
-            $table->string('nama_hotel');
-            $table->string('kota');
-            $table->string('alamat');
-            $table->text('deskripsi');
-            $table->decimal('rating_hotel', 3, 2);
+        Schema::create('icons', function (Blueprint $table) {
+            $table->increments('id_icon');
+            $table->string('nama_icon');
+            $table->string('file_path_icon');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hotels');
+        Schema::dropIfExists('icons');
     }
 };
