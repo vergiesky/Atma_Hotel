@@ -16,7 +16,7 @@ class AdminAuthController extends Controller
             'no_telp' => 'required|string|max:20',
             'email' => 'required|string|email|max:255|unique:users,email', // email tidak boleh duplikat di tabel users kolom email
             'password' => 'required|string|min:8',
-            'tanggal_lahir' => 'required|date',
+            'tanggal_lahir' => 'required|date', // tahun-bulan-tanggal
             'user_profile' => 'nullable|string',
         ]);
 

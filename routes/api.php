@@ -2,13 +2,24 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HotelController;
-use App\Http\Controllers\KamarController;
+
+// Auth
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Auth\CustomerAuthController;
 
-Route::post('/register/admin',    [AdminAuthController::class, 'register']);
+// Admin
+use App\Http\Controllers\HotelController;
+use App\Http\Controllers\KamarController;
+
+// Customer
+use App\Http\Controllers\WishListController;
+use App\Http\Controllers\ReservasiController;
+use App\Http\Controllers\ReviewController;
+
+// --------- ROUTES -----------
+
+Route::post('/register/admin',    [AdminAuthController::class, 'register']); // halaman registr admin & customer dibedain?
 Route::post('/register/customer', [CustomerAuthController::class, 'register']);
 Route::post('/login',  [AuthController::class, 'login']);
 
@@ -37,4 +48,29 @@ Route::middleware(['auth:sanctum', 'ability:admin'])->group(function () {
     Route::post('/kamars/create',        [KamarController::class, 'store']);
     Route::put('/kamars/update/{id}',    [KamarController::class, 'update']);
     Route::delete('/kamars/delete/{id}', [KamarController::class, 'destroy']);
+
+    // memproses pemesanan
+});
+
+// customer
+Route::middleware(['auth:sanctum', 'ability:customer'])->group(function () {
+    // menambahkan daftar wishlist
+    Route::get('/wishlists',                [WishListController::class, 'index']);
+    Route::post('/wishlists/create',        [WishListController::class, 'store']);
+    // Route::put('/wishlists/update/{id}',    [WishListController::class, 'update']); // wishlist ada update?
+    Route::delete('/wishlists/delete/{id}', [WishListController::class, 'destroy']);
+
+    // melakukan pemesanan
+    Route::get('/reservasis',                [ReservasiController::class, 'index']);
+    Route::post('/reservasis/create',        [ReservasiController::class, 'store']);
+    // Route::put('/reservasis/update/{id}',    [ReservasiController::class, 'update']); // reservasi ada update?
+    Route::delete('/reservasis/delete/{id}', [ReservasiController::class, 'destroy']);
+
+    // melakukan pembayaran
+    // memberi review
+    Route::get('/reviews',                [ReviewController::class, 'index']); // tampil seluruh review
+    Route::get('/reviews/{id}',           [ReviewController::class, 'show']); // tampil 1 review
+    Route::post('/reviews/create',        [ReviewController::class, 'store']);
+    Route::put('/reviews/update/{id}',    [ReviewController::class, 'update']);
+    Route::delete('/reviews/delete/{id}', [ReviewController::class, 'destroy']);
 });

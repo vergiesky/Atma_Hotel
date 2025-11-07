@@ -59,7 +59,7 @@ class HotelController extends Controller
     {
         $hotel = Hotel::where('id_hotel', $id)->first();
 
-        if(!$hotel){
+        if (!$hotel) {
             return response()->json([
                 'message' => 'Hotel not found',
             ], 404);
@@ -70,7 +70,7 @@ class HotelController extends Controller
             'kota' => 'required|string|max:100',
             'alamat' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'rating_hotel' => 'nullable|numeric|between:0,5', // rating harus >= 5 dan <=5
+            'rating_hotel' => 'nullable|numeric|between:0,5', // rating harus >= 0 dan <=5
         ]);
 
         $hotel->update($validated);
@@ -79,7 +79,6 @@ class HotelController extends Controller
             'message' => 'Hotel updated succesfully',
             'data' => $hotel->fresh(), // ganti dengan data/objek baru
         ]);
-        
     }
 
     /**
@@ -88,7 +87,7 @@ class HotelController extends Controller
     public function destroy(string $id)
     {
         $hotel = Hotel::where('id_hotel', $id)->first();
-        if(!$hotel){
+        if (!$hotel) {
             return response()->json([
                 'message' => 'Hotel not found',
             ], 404);
