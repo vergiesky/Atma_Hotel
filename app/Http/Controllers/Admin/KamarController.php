@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Kamar;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class KamarController extends Controller
 {
@@ -92,6 +93,5 @@ class KamarController extends Controller
 
         $kamar->delete();
         return response()->json(['message' => 'Kamar deleted successfully']);
-    
     }
 }

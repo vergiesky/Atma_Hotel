@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Customer;
 
 use App\Models\Wishlist;
 // use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
 class WishListController extends Controller
 {
@@ -25,9 +26,9 @@ class WishListController extends Controller
         $userId = Auth::id();
 
         $validated = $request->validate([
-            'id_user' => $userId,
             'id_kamar' => 'required|exists:kamars,id_kamar',
         ]);
+        $validated['id_user'] = $userId; // tambahkan id_user
 
         $wishList = Wishlist::create($validated);
 
@@ -68,9 +69,9 @@ class WishListController extends Controller
         $userId = Auth::id();
 
         $validated = $request->validate([
-            'id_user' => $userId,
             'id_kamar' => 'required',
         ]);
+        $validated['id_user'] = $userId; // tambahkan id_user
 
         $wishList->update($validated);
 

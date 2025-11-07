@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Customer;
 
 use Illuminate\Http\Request;
 use App\Models\Reservasi;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
 class ReservasiController extends Controller
 {
@@ -22,13 +23,13 @@ class ReservasiController extends Controller
         $userId = Auth::id();
 
         $validated = $request->validate([
-            'id_user'  => $userId,
             'check_in' => 'required|date',
             'check_out' => 'required|date',
             'jumlah_tamu' => 'required|numeric|min:1',
             'total_biaya' => 'required|numeric|min:0',
             'status_reservasi' => 'required|string|max:255',
         ]);
+        $validated['id_user'] = $userId; // tambahkan id_user
 
         $reservasi = Reservasi::create($validated);
 
@@ -69,13 +70,13 @@ class ReservasiController extends Controller
         $userId = Auth::id();
 
         $validated = $request->validate([
-            'id_user'  => $userId,
             'check_in' => 'required|date',
             'check_out' => 'required|date',
             'jumlah_tamu' => 'required|numeric|min:1',
             'total_biaya' => 'required|numeric|min:0',
             'status_reservasi' => 'required|string|max:255',
         ]);
+        $validated['id_user'] = $userId; // tambahkan id_user
 
         $reservasi->update($validated);
 

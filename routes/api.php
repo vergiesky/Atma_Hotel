@@ -9,13 +9,13 @@ use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Auth\CustomerAuthController;
 
 // Admin
-use App\Http\Controllers\HotelController;
-use App\Http\Controllers\KamarController;
+use App\Http\Controllers\Admin\HotelController;
+use App\Http\Controllers\Admin\KamarController;
 
 // Customer
-use App\Http\Controllers\WishListController;
-use App\Http\Controllers\ReservasiController;
-use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Customer\WishListController;
+use App\Http\Controllers\Customer\ReservasiController;
+use App\Http\Controllers\Customer\ReviewController;
 
 // --------- ROUTES -----------
 
@@ -63,7 +63,7 @@ Route::middleware(['auth:sanctum', 'ability:customer'])->group(function () {
     // melakukan pemesanan
     Route::get('/reservasis',                [ReservasiController::class, 'index']);
     Route::post('/reservasis/create',        [ReservasiController::class, 'store']);
-    // Route::put('/reservasis/update/{id}',    [ReservasiController::class, 'update']); // reservasi ada update?
+    Route::put('/reservasis/update/{id}',    [ReservasiController::class, 'update']); // reservasi ada update?
     Route::delete('/reservasis/delete/{id}', [ReservasiController::class, 'destroy']);
 
     // melakukan pembayaran

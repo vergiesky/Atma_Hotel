@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Customer;
 
 use Illuminate\Http\Request;
 use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
 class ReviewController extends Controller
 {
@@ -23,13 +24,13 @@ class ReviewController extends Controller
 
         $validated = $request->validate([
             'id_pembayaran' => 'required|exists:pembayarans,id_pembayaran',
-            'id_user' => $userId,
             'id_kamar' => 'required|exists:kamars,id_kamar',
-            'komentar' => 'nullable|text',
+            'komentar' => 'nullable|string',
             'rating' => 'required|numeric|between:0,5',
             'file_path_review' => 'nullable|string',
             'tanggal_review' => 'required|date',
         ]);
+        $validated['id_user'] = $userId; // tambahkan id_user
 
         $review = Review::create($validated);
 
@@ -71,13 +72,13 @@ class ReviewController extends Controller
 
         $validated = $request->validate([
             'id_pembayaran' => 'required|exists:pembayarans,id_pembayaran',
-            'id_user' => $userId,
             'id_kamar' => 'required|exists:kamars,id_kamar',
             'komentar' => 'nullable|text',
             'rating' => 'required|numeric|between:0,5',
             'file_path_review' => 'nullable|string',
             'tanggal_review' => 'required|date',
         ]);
+        $validated['id_user'] = $userId; // tambahkan id_user
 
         $review->update($validated);
 
