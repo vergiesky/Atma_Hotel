@@ -39,14 +39,12 @@ class CustomerPembayaranController extends Controller
 
         $validated = $request->validate([
             'id_reservasi' => 'required|integer|exists:reservasis,id_reservasi',
-            'payment_method' => 'required|string|max:100',
+            'metode_pembayaran' => 'required|string|max:100',
             'jumlah_bayar' => 'required|numeric|min:0',
         ]);
 
         // pastikan reservasi milik user dan masih menunggu_pembayaran
-        $reservasi = Reservasi::where('id_reservasi', $validated['id_reservasi'])
-            ->where('id_user', $userId)
-            ->first();
+        $reservasi = Reservasi::where('id_reservasi', $validated['id_reservasi'])->where('id_user', $userId)->first();
 
         if (!$reservasi) {
             return response()->json([
@@ -67,7 +65,8 @@ class CustomerPembayaranController extends Controller
         if (!$pembayaran) {
             $pembayaran = Pembayaran::create([
                 'id_reservasi' => $reservasi->id_reservasi,
-                'payment_method' => $validated['payment_method'],
+                'tanggal_pembayaran' => now()->toDateString(),
+                'metode_pembayaran' => $validated['metode_pembayaran'],
                 'jumlah_bayar' => $validated['jumlah_bayar'],
                 'status_pembayaran' => 'pending',
             ]);
@@ -80,8 +79,9 @@ class CustomerPembayaranController extends Controller
             }
 
             $pembayaran->update([
-                'payment_method' => $validated['payment_method'] ?? $pembayaran->payment_method,
-                'jumlah_bayar' => $validated['jumlah_bayar'] ?? $pembayaran->jumlah_bayar,
+                'tanggal_pembayaran' => now()->toDateString(),
+                'metode_pembayaran' => $validated['metode_pembayaran'],
+                'jumlah_bayar' => $validated['jumlah_bayar'],
                 'status_pembayaran' => 'pending',
             ]);
         }

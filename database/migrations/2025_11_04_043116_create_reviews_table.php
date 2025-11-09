@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('id_pembayaran')->unsigned();
             $table->integer('id_user')->unsigned();
             $table->integer('id_kamar')->unsigned();
-            $table->text('komentar');
+            $table->text('komentar')->nullable();
             $table->decimal('rating', 3, 2);
             $table->string('file_path_review')->nullable();
             $table->date('tanggal_review');

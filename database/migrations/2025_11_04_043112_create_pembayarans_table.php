@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('pembayarans', function (Blueprint $table) {
             $table->increments('id_pembayaran');
             $table->integer('id_reservasi')->unsigned();
-            $table->date('tanggal_pembayaran');
+            $table->date('tanggal_pembayaran')->nullable();
             $table->string('metode_pembayaran');
-            $table->boolean('status_pembayaran')->default(false);
+            $table->decimal('jumlah_bayar', 12, 2);
+            $table->string('status_pembayaran')->default('pending');
             $table->timestamps();
 
             $table->foreign('id_reservasi')

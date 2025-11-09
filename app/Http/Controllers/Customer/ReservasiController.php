@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer;
 use Carbon\Carbon;
 use App\Models\Kamar;
 use App\Models\Reservasi;
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use App\Models\RincianReservasi;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +33,6 @@ class ReservasiController extends Controller
         ], 200);
     }
 
-    // Create Reservasi
     public function store(Request $request)
     {
         $userId = Auth::id();
@@ -145,7 +145,7 @@ class ReservasiController extends Controller
                 'status_reservasi' => 'Menunggu_Pembayaran',
             ]);
 
-            // Insert rincian kamar
+            // insert rincian kamar
             foreach ($detailKamars as $d) {
                 RincianReservasi::create([
                     'id_reservasi' => $reservasi->id_reservasi,
@@ -165,7 +165,6 @@ class ReservasiController extends Controller
         });
     }
 
-    // Read reservasi
     public function show(string $id)
     {
         $userId = Auth::id();
@@ -208,6 +207,16 @@ class ReservasiController extends Controller
             return response()->json([
                 'message' => 'Reservasi not found',
             ], 404);
+        }
+
+        $sudahBayar = Pembayaran::where('id_reservasi', $reservasi->id_reservasi)
+                ->whereIn('status_pembayaran', ['pending', 'paid'])
+                ->exists();
+
+        if ($sudahBayar) {
+            return response()->json([
+                'message' => 'Reservasi cannot be canceled because payment has already been made',
+            ], 422);
         }
 
         if (strtolower($reservasi->status_reservasi) !== strtolower('Menunggu_Pembayaran')) {

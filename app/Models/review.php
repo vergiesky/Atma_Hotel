@@ -22,10 +22,6 @@ class Review extends Model
         'tanggal_review',
     ];
 
-    protected $casts = [
-        'tanggal_review' => 'date',
-    ];
-
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id_user');

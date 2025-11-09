@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer;
 use App\Models\Kamar;
 use App\Models\Review;
 use App\Models\Reservasi;
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -56,42 +57,75 @@ class ReviewController extends Controller
         $userId = Auth::id();
 
         $validated = $request->validate([
+            'id_pembayaran' => 'required|integer|exists:pembayarans,id_pembayaran',
             'id_kamar' => 'required|integer|exists:kamars,id_kamar',
-            'rating'   => 'required|integer|min:1|max:5',
-            'komentar' => 'nullable|string|max:500',
+            'rating' => 'required|numeric|min:0|max:5',
+            'komentar' => 'nullable|string',
+            'file_path_review' => 'nullable|string|max:255',
         ]);
 
-        // cek pernah menginap & sudah bayar & sudah selesai menginap
-        $pernahMenginapDanSudahBayar = Reservasi::where('id_user', $userId)
-            ->where('status_reservasi', 'Paid')
-            ->where('check_out', '<', now()) // hanya boleh review setelah selesai menginap
-            ->whereHas('rincianReservasis', function ($q) use ($validated) {
-                $q->where('id_kamar', $validated['id_kamar']);
+        // ambil pembayaran + reservasi + rincian dan pastikan milik user
+        $pembayaran = Pembayaran::with(['reservasi.rincianReservasis'])
+            ->where('id_pembayaran', $validated['id_pembayaran'])
+            ->whereHas('reservasi', function ($q) use ($userId) {
+                $q->where('id_user', $userId);
             })
-            ->exists();
+            ->first();
 
-        if (!$pernahMenginapDanSudahBayar) {
+        if (!$pembayaran) {
             return response()->json([
-                'message' => 'Kamu hanya bisa review kamar yang sudah kamu bayar dan menginap (setelah check-out).',
-            ], 403);
+                'message' => 'No payments found for this user',
+            ], 404);
         }
 
-        // cegah double-review user untuk kamar yang sama
+        // harus paid
+        if (strtolower($pembayaran->status_pembayaran) !== 'paid') {
+            return response()->json([
+                'message' => 'Reviews can only be done after the payment has paid status',
+                'status_pembayaran' => $pembayaran->status_pembayaran,
+            ], 422);
+        }
+
+        // pastikan reservasi sudah lewat checkout
+        $reservasi = $pembayaran->reservasi;
+        if (!$reservasi || now()->lt($reservasi->check_out)) {
+            return response()->json([
+                'message' => 'Reviews can only be done after check-out',
+            ], 422);
+        }
+
+        // kamar yang direview harus termasuk dalam rincian reservasi
+        $kamarTermasuk = $reservasi->rincianReservasis
+            ->contains(function ($r) use ($validated) {
+                return (int)$r->id_kamar === (int)$validated['id_kamar'];
+            });
+
+        if (!$kamarTermasuk) {
+            return response()->json([
+                'message' => 'The room reviewed is not included in this payment reservation',
+            ], 422);
+        }
+
+        // mencegah double review (opsi: unik per user + kamar + pembayaran)
         $sudahReview = Review::where('id_user', $userId)
             ->where('id_kamar', $validated['id_kamar'])
+            ->where('id_pembayaran', $validated['id_pembayaran'])
             ->exists();
 
         if ($sudahReview) {
             return response()->json([
-                'message' => 'Kamu sudah pernah memberikan review untuk kamar ini.',
+                'message' => 'You have already provided a review for this room at the time of payment',
             ], 422);
         }
 
         $review = Review::create([
-            'id_user'  => $userId,
+            'id_pembayaran' => $validated['id_pembayaran'],
+            'id_user' => $userId,
             'id_kamar' => $validated['id_kamar'],
-            'rating'   => $validated['rating'],
             'komentar' => $validated['komentar'] ?? null,
+            'rating' => $validated['rating'],
+            'file_path_review'=> $validated['file_path_review'] ?? null,
+            'tanggal_review' => now()->toDateString(),
         ]);
 
         return response()->json([
@@ -100,7 +134,7 @@ class ReviewController extends Controller
         ], 201);
     }
 
-    // Read review
+    // read review
     public function show(string $id)
     {
         // $review = Review::find($id);
@@ -115,17 +149,19 @@ class ReviewController extends Controller
         // return response()->json([
         //     'data' => $review
         // ]);
-
-        $review = Review::with(['user', 'kamar'])->where('id_review', $id)->first();
+        
+        $review = Review::with(['user', 'kamar'])
+            ->where('id_review', $id)
+            ->first();
 
         if (!$review) {
             return response()->json([
-                'message' => 'Review not found',
+                'message' => 'Review not found'
             ], 404);
         }
 
         return response()->json([
-            'data' => $review,
+            'data' => $review
         ], 200);
     }
 
@@ -162,35 +198,35 @@ class ReviewController extends Controller
         $userId = Auth::id();
 
         $validated = $request->validate([
-            'rating'   => 'required|integer|min:1|max:5',
+            'rating' => 'required|numeric|min:0|max:5',
             'komentar' => 'nullable|string|max:500',
+            'file_path_review' => 'nullable|string|max:255',
         ]);
 
-        // ambil review
+
         $review = Review::where('id_review', $id)->first();
 
         if (!$review) {
             return response()->json([
-                'message' => 'Review not found',
+                'message' => 'Review not found'
             ], 404);
         }
 
-        // hanya pemilik review yang boleh update
         if ((int)$review->id_user !== (int)$userId) {
             return response()->json([
-                'message' => 'Tidak punya izin mengubah review ini',
+                'message' => 'Tidak punya izin mengubah review ini'
             ], 403);
         }
 
-        // update field yang diizinkan
         $review->update([
-            'rating'   => $validated['rating'],
+            'rating' => (float)$validated['rating'],
             'komentar' => $validated['komentar'] ?? $review->komentar,
+            'file_path_review' => $validated['file_path_review'] ?? $review->file_path_review,
         ]);
 
         return response()->json([
             'message' => 'Review updated successfully',
-            'data'    => $review->load(['user','kamar']),
+            'data' => $review->load(['user','kamar']),
         ], 200);
     }
 
@@ -217,20 +253,20 @@ class ReviewController extends Controller
 
         if (!$review) {
             return response()->json([
-                'message' => 'Review not found',
+                'message' => 'Review not found'
             ], 404);
         }
 
         if ((int)$review->id_user !== (int)$userId) {
             return response()->json([
-                'message' => 'Tidak punya izin menghapus review ini',
+                'message' => 'Do not have permission to delete this review'
             ], 403);
         }
 
         $review->delete();
 
         return response()->json([
-            'message' => 'Review deleted successfully',
+            'message' => 'Review deleted successfully'
         ], 200);
     }
 }

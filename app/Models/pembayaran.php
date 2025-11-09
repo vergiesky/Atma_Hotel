@@ -16,6 +16,7 @@ class Pembayaran extends Model
         'id_reservasi',
         'tanggal_pembayaran',
         'metode_pembayaran',
+        'jumlah_bayar',
         'status_pembayaran',
     ];
 

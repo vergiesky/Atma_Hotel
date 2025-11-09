@@ -12,25 +12,39 @@ class WishListController extends Controller
 {
     public function index()
     {
-        // $wishList = $request->user()->wishlist; // otomatis ambil milik user login
-        $wishList = Auth::user()->wishlist; // bentuk lain
+        $userId = Auth::id();
+        $wishList = Wishlist::with(['kamar.hotel'])
+            ->where('id_user', $userId)               
+            ->orderByDesc('id_wishlist')
+            ->get();
 
-        return response()->json($wishList);
+        return response()->json([
+            'data' => $wishList
+        ], 200);
     }
 
-
-    // Create Wishlist
     public function store(Request $request)
     {
-        // $userId = $request->user()->id_user; // bentuk lain untuk id user
         $userId = Auth::id();
 
         $validated = $request->validate([
             'id_kamar' => 'required|exists:kamars,id_kamar',
         ]);
-        $validated['id_user'] = $userId; // tambahkan id_user
+        
+        $already = Wishlist::where('id_user', $userId)
+                ->where('id_kamar', $validated['id_kamar'])
+                ->exists();
 
-        $wishList = Wishlist::create($validated);
+        if ($already) {
+            return response()->json([
+                'message' => 'This kamar is already on your wishlist',
+            ], 409);
+        }
+
+        $wishList = Wishlist::create([
+            'id_user'  => $userId,
+            'id_kamar' => $validated['id_kamar'],
+        ]);
 
         return response()->json([
             'message' => 'Wishlist added succesfully',
@@ -38,11 +52,9 @@ class WishListController extends Controller
         ], 201);
     }
 
-    // Read Wishlist
     public function show(string $id)
     {
         $wishList = Wishlist::find($id);
-        // $wishList = Wishlist::where('id_wishlist', $id)->first(); // bentuk lain search id
 
         if (!$wishList) {
             return response()->json([
@@ -55,48 +67,22 @@ class WishListController extends Controller
         ]);
     }
 
-    // Update Wishlist
-    public function update(Request $request, string $id)
-    {
-        $wishList = Wishlist::find($id);
-
-        if (!$wishList) {
-            return response()->json([
-                'message' => 'Wishlist not found',
-            ], 404);
-        }
-
-        $userId = Auth::id();
-
-        $validated = $request->validate([
-            'id_kamar' => 'required',
-        ]);
-        $validated['id_user'] = $userId; // tambahkan id_user
-
-        $wishList->update($validated);
-
-        return response()->json([
-            'message' => 'Wishlist updated succesfully',
-            'data' => $wishList->fresh(), // ganti dengan data/objek baru
-        ]);
-    }
-
-    // Delete Wishlist
     public function destroy(string $id)
     {
-        // $userId = Auth::id();
+        $userId = Auth::id();
         $wishList = Wishlist::find($id);
 
         if (!$wishList) {
-            return response()->json([
-                'message' => 'Wishlist not found',
-            ], 404);
+            return response()->json(['message' => 'Wishlist not found'], 404);
+        }
+
+        if ((int)$wishList->id_user !== (int)$userId) {
+            return response()->json(['message' => 'Dont have permission'], 403);
         }
 
         $wishList->delete();
-
         return response()->json([
-            'message' => 'Wishlist deleted succesfully',
-        ]);
+            'message' => 'Wishlist deleted succesfully'
+        ], 200);
     }
 }

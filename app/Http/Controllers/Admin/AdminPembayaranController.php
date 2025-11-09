@@ -26,16 +26,16 @@ class AdminPembayaranController extends Controller
      */
     public function show(string $id)
     {
-        $item = Pembayaran::with('reservasi')->where('id_pembayaran', $id)->first();
+        $pembayaran = Pembayaran::with('reservasi')->where('id_pembayaran', $id)->first();
 
-        if (!$item) {
+        if (!$pembayaran) {
             return response()->json([
                 'message' => 'Payment not found',
             ], 404);
         }
 
         return response()->json([
-            'data' => $item,
+            'data' => $pembayaran,
         ], 200);
     }
 
@@ -56,6 +56,7 @@ class AdminPembayaranController extends Controller
                 ], 422);
             }
 
+            // cek apakah pembayaran memiliki relasi dengan tabel reservasu dan cek apaakh status_resrvasi === cancelled
             if ($pembayaran->reservasi && strtolower($pembayaran->reservasi->status_reservasi) === 'cancelled') {
                 return response()->json([
                 'message' => 'Cannot pay a cancelled reservation'
@@ -64,6 +65,7 @@ class AdminPembayaranController extends Controller
 
             $pembayaran->update([
                 'status_pembayaran' => 'paid',
+                'tanggal_pembayaran' => now()->toDateString(),
             ]);
 
             if ($pembayaran->reservasi
@@ -93,7 +95,10 @@ class AdminPembayaranController extends Controller
                 return response()->json(['message' => 'Cannot mark failed after paid'], 422);
             }
 
-            $pembayaran->update(['status_pembayaran' => 'failed']);
+            $pembayaran->update([
+                'status_pembayaran' => 'failed',
+                'tanggal_pembayaran' => now()->toDateString(),
+            ]);
 
             return response()->json([
                 'message' => 'Payment marked as failed',

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nama_kamar');
             $table->string('nomor_kamar');
             $table->string('tipe_kamar');
-            $table->decimal('harga', 10, 2);
+            $table->decimal('harga', 12, 2);
             $table->boolean('status_kamar')->default(true);
             $table->string('lantai');
             $table->integer('kapasitas');

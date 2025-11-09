@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments('id_wishlist');
             $table->integer('id_user')->unsigned();
             $table->integer('id_kamar')->unsigned();
+            $table->unique(['id_user', 'id_kamar'], 'wishlists_user_kamar_unique');
             $table->timestamps();
 
             $table->foreign('id_user')
@@ -28,8 +29,6 @@ return new class extends Migration
                     ->on('kamars')
                     ->onDelete('cascade')
                     ->onUpdate('cascade');
-
-            
         });
     }
 

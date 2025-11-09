@@ -17,7 +17,7 @@ return new class extends Migration
             $table->dateTime('check_in');
             $table->dateTime('check_out');
             $table->integer('jumlah_tamu');
-            $table->decimal('total_biaya', 10, 2);
+            $table->decimal('total_biaya', 12, 2);
             $table->string('status_reservasi');
             $table->timestamps();
 

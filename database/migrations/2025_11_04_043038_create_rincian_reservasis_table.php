@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('id_reservasi')->unsigned();
             $table->integer('id_kamar')->unsigned();
             $table->integer('jumlah_kamar');
-            $table->decimal('sub_total', 10, 2);
+            $table->decimal('sub_total', 12, 2);
             $table->timestamps();
 
             $table->foreign('id_reservasi')
