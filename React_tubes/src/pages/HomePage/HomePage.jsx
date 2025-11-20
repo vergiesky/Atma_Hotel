@@ -5,12 +5,12 @@ export default function HomePage() {
     {
       title: "The Grand Oasis",
       subtitle: "Luxury in the city",
-      img: "https://images.unsplash.com/photo-1501117716987-c8e3b7f9b8d6"
+      img: "https://imgcy.trivago.com/c_fill,d_dummy.jpeg,e_sharpen:60,f_auto,h_267,q_40,w_400/hotelier-images/48/52/087dbcb21d15f09a40739b2214904e67e02ed34c52a93e1a0c005c800054.jpeg"
     },
     {
       title: "Coastal Retreat",
       subtitle: "Relax by the sea",
-      img: "https://images.unsplash.com/photo-1501959915551-4e8b88b6d8f9"
+      img: "https://glenburn.co.nz/wp-content/uploads/2022/06/Glenburn-Coastal-Retreat-288.jpg"
     },
     {
       title: "Mountain Haven",
@@ -56,23 +56,23 @@ export default function HomePage() {
         <h2>Popular destinations</h2>
 
         <div className={styles.destGrid}>
-          <div className={styles.destCard}>
-            <img src="https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba" />
+          <div className={styles.destCard} onGotPointerCapture={styles.destInCard}>
+            <img src="https://a.storyblok.com/f/239725/4096x2731/c3337fde3a/01_fr_par_hero_eiffeltower.png/m/3840x2560/filters:quality(70)" />
             <span>Paris</span>
           </div>
 
-          <div className={styles.destCard}>
-            <img src="https://images.unsplash.com/photo-1505765053606-9f1d0c65b0b9" />
+          <div className={styles.destCard} onMouseEnter={styles.destInCard}>
+            <img src="https://content.fun-japan.jp/renewal-prod/cms/articles/content/8801-1jpg_2020-10-19-12-35-24.jpg" />
             <span>Tokyo</span>
           </div>
 
           <div className={styles.destCard}>
-            <img src="https://images.unsplash.com/photo-1549924231-f129b911e442" />
+            <img src="https://i.natgeofe.com/k/5b396b5e-59e7-43a6-9448-708125549aa1/new-york-statue-of-liberty.jpg" />
             <span>New York</span>
           </div>
 
           <div className={styles.destCard}>
-            <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b" />
+            <img src="https://asset.kompas.com/crops/pf3-IXdvShqzIQUoCLqGt4QNGnk=/0x0:2400x1600/1200x800/data/photo/2022/03/31/62455e591e7de.jpg" />
             <span>London</span>
           </div>
         </div>

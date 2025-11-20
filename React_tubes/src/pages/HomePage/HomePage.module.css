@@ -95,3 +95,9 @@
   padding: 10px;
   font-weight: 500;
 }
+
+.destAtCard img {
+  width: 125%;
+  height: 175px;
+  object-fit: cover;
+}

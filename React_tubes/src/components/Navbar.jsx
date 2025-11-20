@@ -8,6 +8,11 @@ export default function Navbar() {
         window.location.href = "/signin";
     }
 
+    const handleHomePage = () => {
+        // Implement navigation to Sign In page
+        window.location.href = "/";
+    }
+
     return (
         <header className={styles.navbar}>
             <div className={styles.logoArea}>
@@ -16,7 +21,7 @@ export default function Navbar() {
             </div>
 
             <nav className={styles.navLinks}>
-                <a>Explore</a>
+                <a onClick={handleHomePage}>Explore</a>
                 <a>Stays</a>
                 <a>Attractions</a>
                 <a>Experiences</a>

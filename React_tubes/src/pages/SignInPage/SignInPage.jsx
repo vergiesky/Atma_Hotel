@@ -49,8 +49,9 @@ export default function SignInPage() {
 
         <button type="button" className={styles.googleBtn}>
           <img
-            src="https://www.gstatic.com/images/branding/product/1x/google_favicon_32dp.png"
+            src="https://cdn2.hubspot.net/hubfs/53/image8-2.jpg"
             alt="g"
+            width="10%"
           />
           Continue with Google
         </button>
