@@ -69,6 +69,12 @@
   color: gray;
 }
 
+.featureCard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    transition: transform 0.5s, box-shadow 0.5s;
+}
+
 /* DESTINATIONS */
 .destGrid {
   display: grid;
@@ -96,8 +102,8 @@
   font-weight: 500;
 }
 
-.destAtCard img {
-  width: 125%;
-  height: 175px;
-  object-fit: cover;
+.destCard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    transition: transform 0.5s, box-shadow 0.5s;
 }

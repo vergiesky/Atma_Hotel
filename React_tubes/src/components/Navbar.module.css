@@ -31,17 +31,25 @@
   align-items: center;
 }
 
+.navButton:hover {
+  color: #a7f3d0;
+}
+
 .navLinks a {
   cursor: pointer;
   color: #444;
 }
 
 .listBtn {
-  background: #a7f3d0;
+  background: #b9f0d7;
   padding: 8px 16px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
+}
+
+.listBtn:hover {
+  background: #5af4af;
 }
 
 .darkBtn {
@@ -53,7 +61,7 @@
 }
 
 .signInBtn {
-  background: #b2b2b2;
+  background: #d1d0d0;
   color: rgb(0, 0, 0);
   padding: 8px 16px;
   border-radius: 8px;
@@ -61,22 +69,7 @@
   cursor: pointer;
 }
 
-/* DARK MODE */
-.darkmode {
-  background: #111;
-  color: #fff;
-}
-
-.darkmode .navbar a {
-  color: #ddd !important;
-}
-
-.darkmode .listBtn {
-  background: #047857;
-  color: white;
-}
-
-.darkmode .darkBtn {
-  background: #333;
-  color: white;
+.signInBtn:hover {
+  background: #b3b3b3;
+  color: rgb(0, 0, 0);
 }

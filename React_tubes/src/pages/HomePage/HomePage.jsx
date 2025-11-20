@@ -56,12 +56,12 @@ export default function HomePage() {
         <h2>Popular destinations</h2>
 
         <div className={styles.destGrid}>
-          <div className={styles.destCard} onGotPointerCapture={styles.destInCard}>
+          <div className={styles.destCard}>
             <img src="https://a.storyblok.com/f/239725/4096x2731/c3337fde3a/01_fr_par_hero_eiffeltower.png/m/3840x2560/filters:quality(70)" />
             <span>Paris</span>
           </div>
 
-          <div className={styles.destCard} onMouseEnter={styles.destInCard}>
+          <div className={styles.destCard}>
             <img src="https://content.fun-japan.jp/renewal-prod/cms/articles/content/8801-1jpg_2020-10-19-12-35-24.jpg" />
             <span>Tokyo</span>
           </div>

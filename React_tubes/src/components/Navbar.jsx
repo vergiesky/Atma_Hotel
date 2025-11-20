@@ -21,10 +21,10 @@ export default function Navbar() {
             </div>
 
             <nav className={styles.navLinks}>
-                <a onClick={handleHomePage}>Explore</a>
-                <a>Stays</a>
-                <a>Attractions</a>
-                <a>Experiences</a>
+                <a class={styles.navButton} onClick={handleHomePage}>Explore</a>
+                <a class={styles.navButton}>Stays</a>
+                <a class={styles.navButton}>Attractions</a>
+                <a class={styles.navButton}>Experiences</a>
                 <button className={styles.listBtn}>List your place</button>
                 <button className={styles.signInBtn} onClick={handleSignIn}>Sign In</button>
             </nav>
