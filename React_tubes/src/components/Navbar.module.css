@@ -52,6 +52,15 @@
   cursor: pointer;
 }
 
+.signInBtn {
+  background: #b2b2b2;
+  color: rgb(0, 0, 0);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
 /* DARK MODE */
 .darkmode {
   background: #111;

@@ -2,12 +2,11 @@ import { useState } from "react";
 import styles from "./Navbar.module.css";
 
 export default function Navbar() {
-    const [dark, setDark] = useState(false);
 
-    const toggleDark = () => {
-        setDark(!dark);
-        document.documentElement.classList.toggle("darkmode");
-    };
+    const handleSignIn = () => {
+        // Implement navigation to Sign In page
+        window.location.href = "/signin";
+    }
 
     return (
         <header className={styles.navbar}>
@@ -22,11 +21,8 @@ export default function Navbar() {
                 <a>Attractions</a>
                 <a>Experiences</a>
                 <button className={styles.listBtn}>List your place</button>
+                <button className={styles.signInBtn} onClick={handleSignIn}>Sign In</button>
             </nav>
-
-            <button className={styles.darkBtn} onClick={toggleDark}>
-                {dark ? "☀️ Light" : "🌙 Dark"}
-            </button>
         </header>
     );
 }
