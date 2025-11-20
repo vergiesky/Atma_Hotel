@@ -20,14 +20,14 @@ export default function Navbar() {
                 <span className={styles.logo}>Hotello</span>
             </div>
 
-            <nav className={styles.navLinks}>
-                <a class={styles.navButton} onClick={handleHomePage}>Explore</a>
-                <a class={styles.navButton}>Stays</a>
-                <a class={styles.navButton}>Attractions</a>
-                <a class={styles.navButton}>Experiences</a>
-                <button className={styles.listBtn}>List your place</button>
-                <button className={styles.signInBtn} onClick={handleSignIn}>Sign In</button>
-            </nav>
+                <nav className={styles.navLinks}>
+                    <a class={styles.navButton} onClick={handleHomePage}>Explore</a>
+                    <a class={styles.navButton}>Stays</a>
+                    <a class={styles.navButton}>Attractions</a>
+                    <a class={styles.navButton}>Experiences</a>
+                    <button className={styles.listBtn}>List your place</button>
+                    <button className={styles.signInBtn} onClick={handleSignIn}>Sign In</button>
+                </nav>
         </header>
     );
 }
