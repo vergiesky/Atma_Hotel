@@ -36,37 +36,32 @@ const router = createBrowserRouter ([
     ),
   },
   {
-    element: (
-      <ProtectedRoute>
-        <MainLayout />
-      </ProtectedRoute>
-    ),
+    element: <MainLayout />,
+    children: [
+    // customer routes
+    {
+        path: "/dashboard",
+        element: (
+        <CustomerRoute>
+            <CustomerDashboard />
+        </CustomerRoute>
+        ),
+    },
+    {
+        path: "/wishlist",
+        element: <Wishlist />,
+    },
 
-        children: [
-        // customer routes
-        {
-            path: "/dashboard",
-            element: (
-            <CustomerRoute>
-                <CustomerDashboard />
-            </CustomerRoute>
-            ),
-        },
-        {
-            path: "/wishlist",
-            element: <Wishlist />,
-        },
-
-        // admin routes
-        //   {
-        //     path: "/admin/dashboard",
-        //     element: (
-        //       <AdminRoute>
-        //         <AdminDashboard />
-        //       </AdminRoute>
-        //     ),
-        //   },
-        ],
+    // admin routes
+    //   {
+    //     path: "/admin/dashboard",
+    //     element: (
+    //       <AdminRoute>
+    //         <AdminDashboard />
+    //       </AdminRoute>
+    //     ),
+    //   },
+    ],
   },
   {
       path: "*",

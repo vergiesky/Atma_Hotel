@@ -5,6 +5,16 @@ import { useState } from "react";
 
 export default function HeaderNavbar() {
     // const { pathname } = useLocation();
+    const location = useLocation();
+    const isActive = (path) => location.pathname === path;
+  
+    const menus = [
+      { label: "Home", path: "/dashboard" },
+      { label: "Wishlist", path: "/wishlist" },
+      { label: "Deals", path: "/deals" },
+      { label: "About", path: "/about" },
+    ];
+
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const navigate = useNavigate();
@@ -43,26 +53,22 @@ export default function HeaderNavbar() {
             </div>
 
             {/* DESKTOP MENU (hide jika login / register) */}
-              <nav className="hidden md:flex items-center gap-2">
-                <button
-                  onClick={() => navigate("/dashboard")}
-                  className="px-5 py-2 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition"
-                >
-                  Home
-                </button>
-                <button
-                  onClick={() => navigate("/wishlist")}
-                  className="px-5 py-2 text-sm text-gray-700 font-medium hover:text-blue-600 transition"
-                >
-                  Wishlist
-                </button>
-                <button className="px-5 py-2 text-sm text-gray-700 font-medium hover:text-blue-600 transition">
-                  Deals
-                </button>
-                <button className="px-5 py-2 text-sm text-gray-700 font-medium hover:text-blue-600 transition">
-                  About
-                </button>
-              </nav>
+               {/* ubah jadi map */}
+                <nav className="hidden md:flex items-center gap-2">
+                  {menus.map((m) => (
+                    <button
+                      key={m.path}
+                      onClick={() => navigate(m.path)}
+                      className={`px-5 py-2 text-sm font-medium transition ${
+                        isActive(m.path)
+                          ? "rounded-full bg-blue-600 text-white hover:bg-blue-700"
+                          : "text-gray-700 hover:text-blue-600"
+                      }`}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </nav>
 
             {/* USER / LOGIN (hide jika login / register) */}
               <div className="hidden md:flex items-center gap-4">

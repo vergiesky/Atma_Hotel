@@ -1,7 +1,7 @@
 // src/pages/customer/Wishlist.jsx
 
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { MapPin, Star, Trash2, ArrowLeft } from "lucide-react";
 
 import useAxios from "../../api";
@@ -94,93 +94,21 @@ export default function Wishlist() {
     return item.hotel || item.kamar?.hotel || item;
   };
 
+
+  const location = useLocation();
+  const isActive = (path) => location.pathname === path;
+
+  const menus = [
+    { label: "Home", path: "/dashboard" },
+    { label: "Wishlist", path: "/wishlist" },
+    { label: "Deals", path: "/deals" },
+    { label: "About", path: "/about" },
+  ];
+
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* NAVBAR (sama kaya dashboard, tapi menu Wishlist aktif) */}
-      <header className="w-full bg-white shadow-sm relative z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo kiri */}
-            <div className="flex items-center gap-2">
-              <img src="/images/logo.png" className="w-10 h-10" alt="Logo" />
-              <span className="font-semibold text-xl text-blue-600">
-                Hotello
-              </span>
-            </div>
-
-            {/* Menu tengah */}
-            <nav className="hidden md:flex items-center gap-2">
-              <button
-                onClick={() => navigate("/dashboard")}
-                className="px-5 py-2 text-sm text-gray-700 font-medium hover:text-blue-600 transition"
-              >
-                Home
-              </button>
-              <button
-                onClick={() => navigate("/wishlist")}
-                className="px-5 py-2 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition"
-              >
-                Wishlist
-              </button>
-              <button className="px-5 py-2 text-sm text-gray-700 font-medium hover:text-blue-600 transition">
-                Deals
-              </button>
-              <button className="px-5 py-2 text-sm text-gray-700 font-medium hover:text-blue-600 transition">
-                About
-              </button>
-            </nav>
-
-            {/* Kanan: profil atau login */}
-            <div className="flex items-center gap-4">
-              {user ? (
-                <div className="flex items-center gap-3">
-                  <div className="hidden sm:block text-right">
-                    <p className="text-sm font-semibold text-gray-800">
-                      {user.nama}
-                    </p>
-                    <button
-                      onClick={handleLogout}
-                      className="text-xs text-red-500 hover:text-red-600 mt-0.5"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center text-blue-700 font-semibold shadow-sm">
-                    {avatarSrc ? (
-                      <img
-                        src={avatarSrc}
-                        alt="Profil"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                        }}
-                      />
-                    ) : (
-                      user.nama?.charAt(0).toUpperCase()
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => navigate("/register")}
-                    className="text-blue-600 text-sm font-medium hover:opacity-70 transition"
-                  >
-                    Sign Up
-                  </button>
-                  <span className="text-gray-300">|</span>
-                  <button
-                    onClick={() => navigate("/login")}
-                    className="text-blue-600 text-sm font-medium hover:opacity-70 transition"
-                  >
-                    Login
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
 
       {/* KONTEN WISHLIST */}
       <main className="flex-1">
