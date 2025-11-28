@@ -11,7 +11,6 @@ import CustomerDashboard from "../pages/customer/CustomerDashboard.jsx";
 // import AdminDashboard from "../pages/customer/AdminDashboard.jsx";
 import Wishlist from "../pages/customer/Wishlist.jsx";
 
-import ProtectedRoute from "../routes/ProtectedRoute.jsx";
 import PublicRoute from "../routes/PublicRoute.jsx";
 import CustomerRoute from "../routes/CustomerRoute.jsx";
 import AdminRoute from "../routes/AdminRoute.jsx";
@@ -49,7 +48,11 @@ const router = createBrowserRouter ([
     },
     {
         path: "/wishlist",
-        element: <Wishlist />,
+        element: (
+        <CustomerRoute>
+            <Wishlist />
+        </CustomerRoute>
+        ),
     },
 
     // admin routes
