@@ -180,6 +180,11 @@ export default function HotelDetail() {
       alertError("Form belum lengkap", "Pilih pembayaran, kamar, dan rating.");
       return;
     }
+    if (reviewForm.rating < 0 || reviewForm.rating > 5) {
+      alertError("Rating tidak sesuai", "Rating hanya boleh antara 0 - 5.");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("id_pembayaran", Number(reviewForm.paymentId));
