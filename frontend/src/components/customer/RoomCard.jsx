@@ -1,6 +1,6 @@
 import React from "react";
 import { Users, CheckCircle2 } from "lucide-react";
-import { getKamarImageUrl } from "../../lib/KamarImage";
+import { getKamarImageUrl } from "../../lib/kamarImage";
 import { getFasilitasKamarIcon } from "../../lib/FasilitasIcon";
 
 export default function RoomCard({
