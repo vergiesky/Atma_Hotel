@@ -1,90 +1,157 @@
-import React, { useEffect, useState } from "react";
-import { MapPin, Star, Trash2, ArrowLeft } from "lucide-react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { MapPin, Star, Trash2, Search } from "lucide-react";
 
-import useAxios, { BASE_URL } from "../../api";
+import {
+  fetchWishlists,
+  deleteWishlist as deleteWishlistApi,
+} from "../../api/customer/apiWishlist";
+import { fetchHotels as fetchHotelsApi } from "../../api/customer/apiHotels";
+import { fetchReviews as fetchReviewsApi } from "../../api/customer/apiReviews";
 import { alertError } from "../../lib/Alert";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/customer/Navbar";
 import { toastInfo } from "../../lib/Toast";
-
-/* HELPER IMAGE HOTEL (DARI DB) */
-function getHotelImageUrl(hotel) {
-  const firstImage = hotel?.gambar_hotels?.[0];
-
-  if (!firstImage || !firstImage.file_path_gambar_hotel) {
-    return "/images/hotel1_main.jpg";
-  }
-
-  let path = (firstImage.file_path_gambar_hotel || "").trim();
-
-  const isAbsolute =
-    path.startsWith("http://") || path.startsWith("https://");
-
-  if (isAbsolute) {
-    return path;
-  }
-
-  // path relatif dari storage Laravel, contoh: "gambar_hotels/93T....jpg"
-  return `${BASE_URL}/storage/${path}`;
-}
+import CustomerPagination from "../../components/customer/CustomerPagination";
+import CustomerFooter from "../../components/customer/CustomerFooter";
+import { getHargaMulaiHotel } from "../../lib/HotelPrice";
+import { getHotelRatingStats } from "../../lib/HotelRating";
+import { getPagination } from "../../lib/Pagination";
+import HotelCard from "../../components/customer/HotelCard";
+import SearchBar from "../../components/customer/SearchBar";
+import { filterWishlistItems } from "../../lib/FilterWishlist";
 
 export default function Wishlist() {
+  const navigate = useNavigate();
   const [wishlist, setWishlist] = useState([]);
+  const [hotels, setHotels] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const pageSize = 9;
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        // Pake endpoint backend
-        const res = await useAxios.get("/wishlists");
-        const data = res.data.data || [];
+        const res = await fetchWishlists();
+        const data = res?.data || [];
+        console.log("Wishlist fetched:", data);
         setWishlist(Array.isArray(data) ? data : []);
-        console.log(res.data);
       } catch (err) {
         console.error(err);
         alertError(
           "Gagal memuat wishlist",
           "Terjadi kesalahan saat mengambil data wishlist."
         );
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchWishlist();
+    const fetchHotels = async () => {
+      try {
+        const res = await fetchHotelsApi();
+        console.log("Hotels fetched:", res?.data);
+        setHotels(Array.isArray(res?.data) ? res.data : []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const fetchReviews = async () => {
+      try {
+        const res = await fetchReviewsApi();
+        console.log("Reviews fetched:", res?.data);
+        setReviews(Array.isArray(res?.data) ? res.data : []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const load = async () => {
+      await Promise.all([fetchWishlist(), fetchHotels(), fetchReviews()]);
+      setLoading(false);
+    };
+
+    load();
   }, []);
 
-const handleRemove = async (item) => {
-  try {
-    await useAxios.delete(`/wishlists/delete/${item.id_wishlist}`);
+  const totalItems = wishlist.length;
+  // clamp page tanpa setState supaya tidak memicu render berantai
+  const { totalPages: calcTotalPages } = getPagination(totalItems, page, pageSize);
+  const currentPage = Math.min(page, calcTotalPages);
+  const { startIndex, endIndex } = getPagination(
+    totalItems,
+    currentPage,
+    pageSize
+  );
 
-    setWishlist((prev) =>
-      prev.filter((w) => w.id_wishlist !== item.id_wishlist)
-    );
+  //  search id_hotel, data hotel agar pencarian tidak error saat dipakai lebih awal
+  const hotelMap = useMemo(() => {
+    const map = {};
+    hotels.forEach((h) => {
+      if (h.id_hotel) map[h.id_hotel] = h;
+    });
+    return map;
+  }, [hotels]);
 
-    // 🔔 Toastify sukses hapus
-    toastInfo("Hotel dihapus dari wishlist");
-  } catch (err) {
-    console.error(err);
-    alertError(
-      "Gagal menghapus",
-      "Terjadi kesalahan saat menghapus dari wishlist."
-    );
-  }
-};
-  // Ambil data hotel dari item wishlist (bisa nested)
-  const getHotelFromItem = (item) => {
-    return item.hotel || item.kamar?.hotel || item;
+  // buat mastiin setiap item wishlist punya objek hotel lengkap
+  const getHotelFromItem = useCallback((item) => {
+    // ambil relasi hotel yang sudah dikirim API
+    const relHotel = item?.hotel || item?.kamar?.hotel || null;
+    
+    const idFromItem =
+      relHotel?.id_hotel ||
+      item?.id_hotel ||
+      item?.kamar?.id_hotel ||
+      item?.kamar?.hotel?.id_hotel;
+
+    // kalau ada data lengkap di map, gabungkan supaya punya kamars/harga/gambar
+    if (idFromItem && hotelMap[idFromItem]) {
+      return { ...hotelMap[idFromItem], ...relHotel };
+    }
+
+    // kalau tidak ada di map, pakai relasi yang ada
+    if (relHotel) return relHotel;
+
+    return item;
+  }, [hotelMap]);
+
+  const filteredWishlist = useMemo(
+    () => filterWishlistItems(wishlist, query, getHotelFromItem),
+    [wishlist, query, getHotelFromItem]
+  );
+
+  const pagedWishlist = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredWishlist.slice(start, start + pageSize);
+  }, [filteredWishlist, currentPage]);
+
+  const handleQueryChange = (val) => {
+    setQuery(val);
+    setPage(1);
+  };
+
+  const handleRemove = async (item) => {
+    try {
+      await deleteWishlistApi(item.id_wishlist);
+      setWishlist((prev) =>
+        prev.filter((w) => w.id_wishlist !== item.id_wishlist)
+      );
+      toastInfo("Hotel dihapus dari wishlist");
+    } catch (err) {
+      console.error(err);
+      alertError(
+        "Gagal menghapus",
+        "Terjadi kesalahan saat menghapus dari wishlist."
+      );
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
 
-      {/* KONTEN WISHLIST */}
       <main className="flex-1">
         <section className="max-w-6xl mx-auto px-4 pt-8 pb-12">
-
-          {/* Judul & info jumlah */}
           <div className="mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900">
               Hotel Favorit Saya
@@ -92,99 +159,75 @@ const handleRemove = async (item) => {
             <p className="text-slate-500 mt-2">
               {loading
                 ? "Memuat wishlist..."
-                : wishlist.length === 0
+                : filteredWishlist.length === 0
                 ? "Belum ada hotel dalam wishlist Anda."
-                : `${wishlist.length} hotel dalam wishlist Anda`}
+                : `Menampilkan ${startIndex}-${endIndex} dari ${filteredWishlist.length} hotel dalam wishlist Anda`}
             </p>
           </div>
 
-          {/* Grid card */}
-          {!loading && wishlist.length > 0 && (
+          <div className="mb-6">
+            <SearchBar
+              value={query}
+              onChange={handleQueryChange}
+              placeholder="Cari hotel berdasarkan nama atau lokasi..."
+            />
+          </div>
+
+          {!loading && filteredWishlist.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-              {wishlist.map((item) => {
-                const hotel = getHotelFromItem(item);
-                const imageUrl = getHotelImageUrl(hotel);
-
-                const hargaNumber =
-                  hotel?.harga_termurah ||
-                  hotel?.harga_per_malam ||
-                  hotel?.harga ||
-                  0;
-
-                const hargaFormatted =
-                  hargaNumber && !isNaN(hargaNumber)
-                    ? `Rp ${Number(hargaNumber).toLocaleString("id-ID")}`
+              {pagedWishlist.map((item) => {
+                const hotel = getHotelFromItem(item) || {};
+                const harga = getHargaMulaiHotel(hotel);
+                const idHotel = hotel?.id_hotel || item?.id_hotel;
+                const kamarIds = (hotel?.kamars || []).map((k) => k.id_kamar);
+                const relatedReviews = kamarIds.length
+                  ? reviews.filter((r) => kamarIds.includes(r.id_kamar))
+                  : [];
+                const { ratingDisplay, totalReviewCount } =
+                  getHotelRatingStats(relatedReviews, hotel);
+                const ratingText =
+                  ratingDisplay !== undefined && ratingDisplay !== null
+                    ? String(ratingDisplay).replace(/\.0$/, "")
                     : "-";
 
                 return (
-                  <div
-                    key={item.id_wishlist || hotel?.id_hotel}
-                    className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col relative h-full"
-                  >
-                    {/* Tombol hapus */}
-                    <button
-                      type="button"
-                      onClick={() => handleRemove(item)}
-                      className="absolute top-4 right-4 w-9 h-9 rounded-full bg-red-50 border border-red-200 flex items-center justify-center hover:bg-red-100 transition"
-                    >
-                      <Trash2 className="w-4 h-4 text-red-500" />
-                    </button>
-
-                    {/* FOTO HOTEL */}
-                    <div className="h-40 bg-gray-100">
-                      <img
-                        src={imageUrl}
-                        alt={hotel?.nama_hotel}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = "/images/hotel1_main.jpg";
-                        }}
-                      />
-                    </div>
-
-                    {/* DETAIL HOTEL */}
-                    <div className="p-6 flex flex-col flex-1">
-                      <h3 className="font-semibold text-lg mb-1">
-                        {hotel?.nama_hotel || "Nama hotel"}
-                      </h3>
-
-                      <div className="flex items-center text-gray-600 text-sm mb-2">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        {(hotel?.kota || "") +
-                          (hotel?.alamat ? ` • ${hotel.alamat}` : "")}
-                      </div>
-
-                      <div className="flex items-center gap-1 mb-2">
-                        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                        <span>{hotel?.rating_hotel ?? "-"}</span>
-                      </div>
-
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow">
-                        {hotel?.deskripsi ||
-                          "Hotel nyaman dengan fasilitas lengkap untuk perjalanan Anda."}
-                      </p>
-
-                      <div className="mb-4 text-sm">
-                        <p className="text-gray-500 mb-1">Mulai dari</p>
-                        <p className="font-semibold text-blue-600">
-                          {hargaFormatted}
-                        </p>
-                      </div>
-
-                      <button
-                        onClick={() => navigate(`/hotel/${hotel?.id_hotel}`)}
-                        className="w-full h-11 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition mt-auto"
-                      >
-                        Lihat Detail
-                      </button>
-                    </div>
-                  </div>
+                  <HotelCard
+                    key={item.id_wishlist || idHotel}
+                    hotel={hotel}
+                    ratingDisplay={ratingText || "-"}
+                    ratingCount={totalReviewCount || 0}
+                    priceValue={harga}
+                    onRemove={() => handleRemove(item)}
+                    onViewDetail={() => navigate(`/hotel/${idHotel}`)}
+                    onReserve={() => {
+                      const token = localStorage.getItem("token");
+                      if (!token) {
+                        alertError(
+                          "Harus login",
+                          "Masuk dulu untuk membuat reservasi."
+                        );
+                        navigate("/login");
+                        return;
+                      }
+                      navigate(`/reservation/${idHotel}`);
+                    }}
+                  />
                 );
               })}
             </div>
           )}
+
+          {filteredWishlist.length > 0 && (
+            <CustomerPagination
+              page={currentPage}
+              totalItems={filteredWishlist.length}
+              pageSize={pageSize}
+              onChange={(p) => setPage(p)}
+            />
+          )}
         </section>
       </main>
+      <CustomerFooter />
     </div>
   );
 }

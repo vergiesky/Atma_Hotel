@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import Navbar from "../../components/customer/Navbar";
+import CustomerFooter from "../../components/customer/CustomerFooter";
 import {
   MapPin,
   ShieldCheck,
@@ -9,29 +10,13 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-import Navbar from "../../components/Navbar";
-import useAxios from "../../api";
-
 export default function About() {
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await useAxios.get("/hotels");
-        console.log("Berhasil memuat about");
-      } catch (err) {
-        console.error("Gagal memuat data", err);
-      }
-    };
-    fetchData();
-  }, []);
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Navbar utama */}
       <Navbar />
 
       <main className="flex-1">
-        {/* Hero */}
+        {/* header */}
         <section className="bg-white border-b border-gray-100">
           <div className="max-w-6xl mx-auto px-4 py-10 md:py-14">
             <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -50,8 +35,8 @@ export default function About() {
                   yang cepat, transparan, dan tanpa ribet.
                 </p>
                 <p className="text-gray-500 text-xs md:text-sm">
-                  Cocok untuk liburan, perjalanan bisnis, atau sekadar staycation
-                  singkat di akhir pekan.
+                  Cocok untuk liburan, perjalanan bisnis, atau sekadar
+                  staycation singkat di akhir pekan.
                 </p>
               </div>
 
@@ -63,11 +48,16 @@ export default function About() {
                   <ul className="space-y-3 text-xs md:text-sm">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-300" />
-                      <span>Pencarian hotel berdasarkan kota dan tanggal menginap.</span>
+                      <span>
+                        Pencarian hotel berdasarkan kota dan tanggal menginap.
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-300" />
-                      <span>Detail hotel yang jelas: foto, fasilitas, rating, dan lokasi.</span>
+                      <span>
+                        Detail hotel yang jelas: foto, fasilitas, rating, dan
+                        lokasi.
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-300" />
@@ -75,12 +65,15 @@ export default function About() {
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-300" />
-                      <span>Integrasi dengan sistem backend Laravel untuk data yang aman.</span>
+                      <span>
+                        Integrasi dengan sistem backend Laravel untuk data yang
+                        aman.
+                      </span>
                     </li>
                   </ul>
                 </div>
 
-                <div className="hidden md:block absolute -bottom-6 -right-4 bg-white rounded-2xl shadow-lg px-4 py-3 text-xs text-gray-700">
+                <div className="md:block absolute -bottom-8 -right-4 bg-white rounded-2xl shadow-lg px-4 py-3 text-xs text-gray-700">
                   <p className="font-semibold flex items-center gap-1">
                     <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                     Rata-rata rating hotel 4.5/5
@@ -94,7 +87,7 @@ export default function About() {
           </div>
         </section>
 
-        {/* Kenapa Hotello */}
+        {/* kenapa Hotello */}
         <section className="py-10 md:py-14">
           <div className="max-w-6xl mx-auto px-4">
             <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
@@ -128,7 +121,8 @@ export default function About() {
                 </h3>
                 <p className="text-xs text-gray-600 leading-relaxed">
                   Backend menggunakan Laravel, autentikasi dengan Sanctum, dan
-                  pemisahan peran Admin & Customer untuk pengelolaan data yang lebih aman.
+                  pemisahan peran Admin & Customer untuk pengelolaan data yang
+                  lebih aman.
                 </p>
               </div>
 
@@ -148,7 +142,7 @@ export default function About() {
           </div>
         </section>
 
-        {/* Cara kerja singkat */}
+        {/* cara kerja Hotello */}
         <section className="py-10 md:py-14 bg-white border-t border-b border-gray-100">
           <div className="max-w-6xl mx-auto px-4">
             <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
@@ -205,8 +199,8 @@ export default function About() {
                     Lanjut ke reservasi
                   </p>
                   <p className="text-gray-600 text-xs">
-                    Setelah memilih hotel, kamu bisa melanjutkan proses reservasi
-                    dan melengkapi data sesuai kebijakan hotel.
+                    Setelah memilih hotel, kamu bisa melanjutkan proses
+                    reservasi dan melengkapi data sesuai kebijakan hotel.
                   </p>
                 </div>
               </div>
@@ -214,7 +208,7 @@ export default function About() {
           </div>
         </section>
 
-        {/* Komitmen & Kontak */}
+        {/* komitmen dan Kontak */}
         <section className="py-10 md:py-14">
           <div className="max-w-6xl mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-8">
@@ -224,14 +218,15 @@ export default function About() {
                 </h2>
                 <p className="text-sm text-gray-600 mb-3 leading-relaxed">
                   Hotello dikembangkan sebagai bagian dari proyek aplikasi web /
-                  sistem informasi perhotelan. Fokus utama kami adalah memberikan
-                  pengalaman pemesanan yang jelas, konsisten, dan mudah dipahami
-                  oleh pengguna.
+                  sistem informasi perhotelan. Fokus utama kami adalah
+                  memberikan pengalaman pemesanan yang jelas, konsisten, dan
+                  mudah dipahami oleh pengguna.
                 </p>
                 <p className="text-sm text-gray-600 leading-relaxed">
                   Ke depannya, fitur-fitur seperti riwayat reservasi, metode
-                  pembayaran yang lebih lengkap, serta integrasi pendapatan untuk
-                  pemilik hotel dapat ditambahkan di atas fondasi yang sudah ada.
+                  pembayaran yang lebih lengkap, serta integrasi pendapatan
+                  untuk pemilik hotel dapat ditambahkan di atas fondasi yang
+                  sudah ada.
                 </p>
               </div>
 
@@ -248,27 +243,21 @@ export default function About() {
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2">
                     <Mail className="w-4 h-4 text-gray-500" />
-                    <span className="text-gray-700">
-                      support@hotello.test
-                    </span>
+                    <span className="text-gray-700">hotello@gmail.com</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-gray-500" />
                     <span className="text-gray-700">
-                      +62 812-0000-0000 (demo)
+                      +62 812-4766-2275
                     </span>
                   </div>
                 </div>
-
-                <p className="text-[11px] text-gray-400 mt-4">
-                  *Kontak di atas dapat disesuaikan dengan kebutuhan tugas / proyek
-                  kamu (misalnya diganti dengan email kampus atau repo GitHub).
-                </p>
               </div>
             </div>
           </div>
         </section>
       </main>
+      <CustomerFooter />
     </div>
   );
 }
