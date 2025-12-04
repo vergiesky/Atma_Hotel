@@ -56,6 +56,12 @@ export function alertConfirm({
   cancelButtonText = "Batal",
   icon = "warning",
 }) {
+  const isDelete = confirmButtonText.toLowerCase().includes("hapus");
+  const confirmButtonColor = isDelete ? "#dc2626" : defaultButtons.confirmButtonColor;
+  const confirmButtonClass = isDelete
+    ? "swal2-confirm px-5 py-2.5 rounded-lg font-semibold bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-200"
+    : defaultButtons.customClass.confirmButton;
+
   return MySwal.fire({
     icon,
     title,
@@ -63,7 +69,12 @@ export function alertConfirm({
     showCancelButton: true,
     confirmButtonText,
     cancelButtonText,
+    confirmButtonColor,
     ...defaultButtons,
+    customClass: {
+      ...defaultButtons.customClass,
+      confirmButton: confirmButtonClass,
+    },
   });
 }
 
