@@ -108,6 +108,13 @@ class AdminPembayaranController extends Controller
                 'tanggal_pembayaran' => now()->toDateString(),
             ]);
 
+            if ($pembayaran->reservasi
+                && strtolower($pembayaran->reservasi->status_reservasi) === strtolower('Menunggu_Pembayaran')) {
+                $pembayaran->reservasi->update([
+                    'status_reservasi' => 'Failed',
+                ]);
+            }
+
             return response()->json([
                 'message' => 'Payment marked as failed',
                 'data' => $pembayaran->fresh('reservasi'),

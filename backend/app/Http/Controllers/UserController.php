@@ -67,51 +67,28 @@ class UserController extends Controller
         ], 200);
     }
 
-    // public function update(Request $request)
-    // {
-    //     $user = $request->user();
-
-    //     $validated = $request->validate([
-    //         'nama' => 'sometimes|string|max:255',
-    //         'no_telp' => 'sometimes|string|max:50',
-    //         'email' => ['sometimes', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id_user, 'id_user')],
-    //         'tanggal_lahir' => 'sometimes|date',
-    //         'user_profile' => 'sometimes|nullable|image|mimes:jpg,jpeg,png|max:2048',
-    //     ]);
-
-    //     // nilai biasa
-    //     $user->fill(collect($validated)->except(['user_profile', 'hapus_foto'])->toArray());
-
-    //     // handle upload foto baru
-    //     if ($request->hasFile('user_profile')) {
-    //         // hapus foto lama jika ada
-    //         if ($user->user_profile) {
-    //             Storage::disk('public')->delete($user->user_profile);
-    //         }
-    //         $path = $request->file('user_profile')->store('profile_pictures', 'public');
-    //         $user->user_profile = $path;
-    //     }
-
-    //     $user->save();
-
-    //     return response()->json([
-    //         'message' => 'Profile updated successfully',
-    //         'data'    => $user->fresh(),
-    //     ], 200);
-    // }
-
     public function updatePassword(Request $request)
     {
         $user = $request->user();
 
-        $request->validate([
-            'password_lama' => 'required|string',
-            'password_baru' => 'required|string|min:8|confirmed',
-        ]);
+        $request->validate(
+            [
+                'password_lama' => 'required|string',
+                'password_baru' => 'required|string|min:8|confirmed',
+                'password_baru_confirmation' => 'required|string',
+            ],
+            [
+                'password_lama.required' => 'Password Lama tidak boleh kosong.',
+                'password_baru.required' => 'Password Baru tidak boleh kosong.',
+                'password_baru.min' => 'Password Baru minimal 8 karakter.',
+                'password_baru_confirmation.required' => 'Konfirmasi Password Baru tidak boleh kosong.',
+                'password_baru.confirmed' => 'Password Baru dan Konfirmasi Password Baru harus sama.',
+            ]
+        );
 
         if (!Hash::check($request->password_lama, $user->password)) {
             return response()->json([
-                'message' => 'The old password is incorrect',
+                'message' => 'Password Lama yang Anda masukkan tidak sesuai',
             ], 400);
         }
 
@@ -120,7 +97,7 @@ class UserController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Password changed successfully',
+            'message' => 'Password berhasil diubah',
         ], 200);
     }
 

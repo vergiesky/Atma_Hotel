@@ -29,7 +29,7 @@ class ReservasiController extends Controller
         $result = $kamars->map(function ($kamar) use ($checkIn, $checkOut) {
             $terpakai = RincianReservasi::where('id_kamar', $kamar->id_kamar)
                 ->whereHas('reservasi', function ($q) use ($checkIn, $checkOut) {
-                    $q->whereNotIn('status_reservasi', ['cancelled'])
+                    $q->whereNotIn('status_reservasi', ['cancelled', 'Failed', 'failed'])
                         ->where(function ($w) use ($checkIn, $checkOut) {
                             $w->where('check_out', '>',  $checkIn)
                                 ->where('check_in',  '<',  $checkOut);
