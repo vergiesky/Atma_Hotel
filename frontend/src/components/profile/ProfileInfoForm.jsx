@@ -20,15 +20,21 @@ export default function ProfileInfoForm({
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-center justify-between gap-3 flex-wrap mb-6">
         <h3 className="text-lg font-semibold text-gray-900">Informasi Akun</h3>
+        {!isEditing ? (
           <button
             onClick={onEdit}
-            className=
-            {isEditing ? "hidden" : // sembunyikan tombol edit ketika sedang mengedit
-              "flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 px-2 py-1 rounded-md transition-all duration-150 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-200"
-            }
+            className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 px-2 py-1 rounded-md transition-all duration-150 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-200"
           >
             Edit
           </button>
+        ) : (
+          <button
+            onClick={onCancel}
+            className="text-sm text-gray-600 hover:text-gray-700 px-2 py-1 rounded-md transition-all duration-150 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-200"
+          >
+            Batal
+          </button>
+        )}
       </div>
 
       {isEditing ? (

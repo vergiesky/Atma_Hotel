@@ -51,7 +51,9 @@ export default function GambarKamarList() {
     return items.filter((item) => {
       const room = item.kamar?.nama_kamar || item.nama_kamar || "";
       const name = item.nama_gambar_kamar || "";
-      return [room, name].some((val) =>
+      const desc = item.keterangan_gambar_kamar || "";
+      const path = item.file_path_gambar_kamar || "";
+      return [room, name, desc, path].some((val) =>
         String(val).toLowerCase().includes(q)
       );
     });
@@ -93,7 +95,7 @@ export default function GambarKamarList() {
           onQueryChange={setQuery}
           onAdd={() => navigate("/admin/gambar-kamar/create")}
           addLabel="Tambah Gambar"
-          searchPlaceholder="Cari nama gambar atau kamar..."
+          searchPlaceholder="Cari kamar, nama, keterangan..."
         />
 
         <AdminTableLayout

@@ -45,7 +45,8 @@ export default function FacilityHotel() {
     return facilities.filter((item) => {
       const hotel = item.hotel?.nama_hotel || item.nama_hotel || "";
       const name = item.nama_fasilitas || item.fasilitas || "";
-      const fields = [hotel, name].join(" ").toLowerCase();
+      const desc = item.keterangan_fasilitas_hotel || item.deskripsi || "";
+      const fields = [hotel, name, desc].join(" ").toLowerCase();
       return fields.includes(q);
     });
   }, [facilities, query]);
@@ -95,7 +96,7 @@ export default function FacilityHotel() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Cari hotel atau nama fasilitas..."
+                placeholder="Cari hotel, fasilitas, deskripsi..."
                 className="pl-9 pr-3 py-2 w-full sm:w-64 rounded-lg border border-slate-200 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
               />
             </div>

@@ -17,7 +17,7 @@ import Navbar from "../../components/customer/Navbar";
 import { alertError, alertSuccess } from "../../lib/Alert";
 import { toastInfo, toastSuccess } from "../../lib/Toast";
 import { getHotelImageUrls } from "../../lib/HotelImage";
-import { formatDate } from "../../lib/formatDate";
+import { formatDate } from "../../lib/FormatDate";
 import { getHargaMulaiHotel } from "../../lib/HotelPrice";
 import { getHotelRatingStats } from "../../lib/HotelRating";
 import Lightbox from "../../components/customer/Lightbox";
@@ -180,11 +180,6 @@ export default function HotelDetail() {
       alertError("Form belum lengkap", "Pilih pembayaran, kamar, dan rating.");
       return;
     }
-    if (reviewForm.rating < 0 || reviewForm.rating > 5) {
-      alertError("Rating tidak sesuai", "Rating hanya boleh antara 0 - 5.");
-      return;
-    }
-
     try {
       const formData = new FormData();
       formData.append("id_pembayaran", Number(reviewForm.paymentId));

@@ -1,5 +1,4 @@
 import Navbar from "../components/customer/Navbar";
-import CustomerFooter from "../components/customer/CustomerFooter";
 
 export default function Terms() {
   const sections = [
@@ -102,7 +101,6 @@ export default function Terms() {
           </div>
         </div>
       </main>
-      <CustomerFooter />
     </div>
   );
 }

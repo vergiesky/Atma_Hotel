@@ -44,7 +44,12 @@ export default function Hotel() {
     const q = query.trim().toLowerCase();
     if (!q) return hotels;
     return hotels.filter((hotel) => {
-      const fields = [hotel.nama_hotel, hotel.kota]
+      const fields = [
+        hotel.nama_hotel,
+        hotel.alamat,
+        hotel.kota,
+        hotel.rating_hotel,
+      ]
         .map((v) => (v === null || v === undefined ? "" : String(v)))
         .join(" ")
         .toLowerCase();
@@ -98,7 +103,7 @@ export default function Hotel() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Cari nama atau kota..."
+                placeholder="Cari nama, alamat, kota..."
                 className="pl-9 pr-3 py-2 w-full sm:w-64 rounded-lg border border-slate-200 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
               />
             </div>

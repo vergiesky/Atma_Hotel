@@ -44,7 +44,8 @@ export default function IconList() {
     if (!q) return icons;
     return icons.filter((icon) => {
       const name = icon.nama_icon || "";
-      return String(name).toLowerCase().includes(q);
+      const path = icon.file_path_icon || "";
+      return [name, path].some((val) => String(val).toLowerCase().includes(q));
     });
   }, [icons, query]);
 
@@ -91,7 +92,7 @@ export default function IconList() {
           onQueryChange={setQuery}
           onAdd={() => navigate("/admin/icons/create")}
           addLabel="Tambah Icon"
-          searchPlaceholder="Cari nama icon..."
+          searchPlaceholder="Cari nama atau path icon..."
         />
 
         <AdminTableLayout

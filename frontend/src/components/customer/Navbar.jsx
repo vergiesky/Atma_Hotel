@@ -19,7 +19,7 @@ export default function Navbar() {
     ? `${BASE_URL}/storage/${user.user_profile}`
     : null;
 
-  // hapus semua data di localStorage (termasuk user dan token)
+  // hapus semua data di localStorage (termasuk user + token)
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
@@ -49,14 +49,14 @@ export default function Navbar() {
             className="flex items-center gap-2 cursor-pointer"
             onClick={() => navigate("/dashboard")}
           >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-md">
               <img
                 src="/images/logo.png"
                 alt="Hotello"
                 className="w-7 h-7 sm:w-8 sm:h-8"
               />
             </div>
-            <span className="sm:inline font-bold text-xl text-blue-600">
+            <span className="sm:inline font-bold text-xl bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
               Hotello
             </span>
           </div>

@@ -69,8 +69,6 @@ export default function Dashboard() {
   }, []);
 
   const summary = useMemo(() => {
-
-    // Filter pembayaran yang sudah dibayar
     const paidPayments = payments.filter(
       (p) => (p.status_pembayaran || "").toLowerCase() === "paid"
     );
@@ -87,9 +85,7 @@ export default function Dashboard() {
       const status = (item.status_pembayaran || "").toLowerCase();
       if (status === "paid") totals.totalPaid += 1;
       if (status === "pending") totals.totalPending += 1;
-      if (status === "paid") {
-        totals.revenue += Number(item.jumlah_bayar) || 0;
-      }
+      totals.revenue += Number(item.jumlah_bayar) || 0;
     });
 
     // gunakan hanya pembayaran yang sudah paid untuk laporan hotel/kamar
@@ -212,13 +208,8 @@ export default function Dashboard() {
                 data={monthlyRevenue.data}
                 margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
               >
-                {/*grid background*/}
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" /> 
-
-                {/*sumbu X atau bulan*/}
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis dataKey="month" tick={{ fill: "#334155" }} />
-
-                {/*sumbu Y atau nilai pendapatan(juta)*/}
                 <YAxis
                   tick={{ fill: "#334155" }}
                   tickFormatter={(v) => `${Math.round(v / 1_000_000)} Jt`}
@@ -231,8 +222,6 @@ export default function Dashboard() {
                   labelFormatter={(label) => label}
                 />
                 <ReLegend formatter={() => "Total Penghasilan"} />
-
-                {/*Line utama*/}
                 <Line
                   type="monotone"
                   dataKey="revenue"

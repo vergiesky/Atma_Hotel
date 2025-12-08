@@ -12,7 +12,7 @@ export default function ReviewForm({
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 mt-6 p-6">
       <h4 className="text-sm font-semibold text-slate-900 mb-3">Tulis Review</h4>
-      <form className="space-y-3" onSubmit={onSubmit} noValidate>
+      <form className="space-y-3" onSubmit={onSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <label className="text-sm text-slate-700 space-y-1">
             Pilih Pembayaran

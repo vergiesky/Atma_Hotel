@@ -60,22 +60,7 @@ export function calcTotalBiaya(kamarList = [], selections = [], nights) {
   }, 0);
 }
 
-export function calcTotalCapacity(kamarList = [], selections = []) {
-  return selections.reduce((acc, row) => {
-    const kamar = kamarList.find((k) => Number(k.id_kamar) === row.id_kamar);
-    const kapasitas = Number(kamar?.kapasitas) || 0;
-    const qty = Number(row.jumlah_kamar) || 0;
-    return acc + kapasitas * qty;
-  }, 0);
-}
-
-export function validateReservation({
-  checkIn,
-  checkOut,
-  nights,
-  selections,
-  guestCount,
-}) {
+export function validateReservation({ checkIn, checkOut, nights, selections }) {
   if (!checkIn || !checkOut) {
     return {
       title: "Tanggal belum lengkap",
@@ -86,12 +71,6 @@ export function validateReservation({
     return {
       title: "Tanggal tidak valid",
       message: "Check-out harus setelah check-in.",
-    };
-  }
-  if (!guestCount || Number(guestCount) < 1) {
-    return {
-      title: "Jumlah tamu tidak valid",
-      message: "Minimal 1 tamu untuk membuat reservasi.",
     };
   }
   if (!selections || selections.length === 0) {

@@ -29,7 +29,6 @@ function formatDate(value) {
   return `${day}-${month}-${year}`;
 }
 
-// Komponen badge status pembayaran
 function StatusBadge({ status }) {
   const normalized = (status || "").toLowerCase();
   const map = {
@@ -90,7 +89,6 @@ export default function PembayaranList() {
     setPage(1);
   }, [data.length, query]);
 
-  // Mengubah status pembayaran
   const handleMark = async (id, type) => {
     const confirm = await alertConfirm({
       title: type === "paid" ? "Tandai Paid?" : "Tandai Failed?",
@@ -109,7 +107,6 @@ export default function PembayaranList() {
           ? `/admin/pembayarans/mark-paid/${id}`
           : `/admin/pembayarans/mark-failed/${id}`;
       await useAxios.put(url);
-      // Update status di UI
       setSelectedStatus(type);
       setSelected((prev) =>
         prev ? { ...prev, status_pembayaran: type } : prev
@@ -123,7 +120,6 @@ export default function PembayaranList() {
     }
   };
 
-  // Filter & search
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return data;
@@ -132,7 +128,13 @@ export default function PembayaranList() {
         item.reservasi?.rincian_reservasis?.[0]?.kamar?.hotel?.nama_hotel || "";
       const guestName = item.reservasi?.user?.nama || "";
       const bookingId = item.reservasi?.id_reservasi || item.id_reservasi || "";
-      const fields = [hotelName, guestName, String(bookingId)]
+      const fields = [
+        hotelName,
+        guestName,
+        item.metode_pembayaran || "",
+        item.status_pembayaran || "",
+        String(bookingId),
+      ]
         .join(" ")
         .toLowerCase();
       return fields.includes(q);
