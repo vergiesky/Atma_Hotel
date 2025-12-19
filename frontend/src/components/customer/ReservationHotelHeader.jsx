@@ -1,6 +1,6 @@
 import React from "react";
 import { MapPin } from "lucide-react";
-import { getKamarImageUrl } from "../../lib/KamarImage";
+import { getKamarImageUrl } from "../../lib/kamarImage";
 
 export default function ReservationHotelHeader({ hotel, primaryRoom }) {
   if (!hotel) return null;

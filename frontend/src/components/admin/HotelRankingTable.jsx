@@ -1,5 +1,5 @@
 import React from "react";
-import formatShortRupiah from "../../lib/FormatShortRupiah";
+import formatShortRupiah from "../../lib/formatShortRupiah";
 import ReportSkeleton from "./ReportSkeleton";
 
 function RankingBadge({ rank }) {
